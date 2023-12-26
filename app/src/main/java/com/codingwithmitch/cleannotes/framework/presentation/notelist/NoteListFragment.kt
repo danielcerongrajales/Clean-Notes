@@ -27,6 +27,8 @@ import com.codingwithmitch.cleannotes.business.interactors.common.DeleteNote.Com
 import com.codingwithmitch.cleannotes.business.interactors.notelist.DeleteMultipleNotes.Companion.DELETE_NOTES_ARE_YOU_SURE
 import com.codingwithmitch.cleannotes.business.domain.state.*
 import com.codingwithmitch.cleannotes.business.domain.util.DateUtil
+import com.codingwithmitch.cleannotes.databinding.FragmentNoteListBinding
+import com.codingwithmitch.cleannotes.databinding.FragmentSplashBinding
 import com.codingwithmitch.cleannotes.framework.datasource.cache.database.NOTE_FILTER_DATE_CREATED
 import com.codingwithmitch.cleannotes.framework.datasource.cache.database.NOTE_FILTER_TITLE
 import com.codingwithmitch.cleannotes.framework.datasource.cache.database.NOTE_ORDER_ASC
@@ -41,12 +43,7 @@ import com.codingwithmitch.cleannotes.framework.presentation.notelist.state.Note
 import com.codingwithmitch.cleannotes.util.AndroidTestUtils
 import com.codingwithmitch.cleannotes.util.TodoCallback
 import com.codingwithmitch.cleannotes.util.printLogD
-import kotlinx.android.synthetic.main.fragment_note_list.*
 import kotlinx.coroutines.*
-import kotlinx.coroutines.Dispatchers.IO
-import kotlinx.coroutines.Dispatchers.Main
-import kotlinx.coroutines.NonCancellable.cancel
-import kotlinx.coroutines.flow.*
 import java.lang.Exception
 import javax.inject.Inject
 
@@ -60,7 +57,7 @@ class NoteListFragment
 constructor(
     private val viewModelFactory: ViewModelProvider.Factory,
     private val dateUtil: DateUtil
-): BaseNoteFragment(R.layout.fragment_note_list),
+): BaseNoteFragment<FragmentNoteListBinding>(FragmentNoteListBinding::inflate),
     NoteListAdapter.Interaction,
     ItemTouchHelperAdapter
 {
@@ -142,18 +139,18 @@ constructor(
 
     override fun restoreListPosition() {
         viewModel.getLayoutManagerState()?.let { lmState ->
-            recycler_view?.layoutManager?.onRestoreInstanceState(lmState)
+            binding.recyclerView?.layoutManager?.onRestoreInstanceState(lmState)
         }
     }
 
     private fun saveLayoutManagerState(){
-        recycler_view.layoutManager?.onSaveInstanceState()?.let { lmState ->
+        binding.recyclerView.layoutManager?.onSaveInstanceState()?.let { lmState ->
             viewModel.setLayoutManagerState(lmState)
         }
     }
 
     private fun setupRecyclerView(){
-        recycler_view.apply {
+        binding.recyclerView.apply {
             layoutManager = LinearLayoutManager(activity)
             val topSpacingDecorator = TopSpacingItemDecoration(20)
             addItemDecoration(topSpacingDecorator)
@@ -195,7 +192,7 @@ constructor(
                 LinearLayout.LayoutParams.MATCH_PARENT,
                 LinearLayout.LayoutParams.MATCH_PARENT
             )
-            toolbar_content_container.addView(view)
+            binding.toolbarContentContainer.addView(view)
             setupMultiSelectionToolbar(view)
         }
     }
@@ -225,7 +222,7 @@ constructor(
                 LinearLayout.LayoutParams.MATCH_PARENT,
                 LinearLayout.LayoutParams.MATCH_PARENT
             )
-            toolbar_content_container.addView(view)
+            binding.toolbarContentContainer.addView(view)
             setupSearchView()
             setupFilterButton()
         }
@@ -233,18 +230,18 @@ constructor(
 
     private fun disableMultiSelectToolbarState(){
         view?.let {
-            val view = toolbar_content_container
+            val view = binding.toolbarContentContainer
                 .findViewById<Toolbar>(R.id.multiselect_toolbar)
-            toolbar_content_container.removeView(view)
+            binding.toolbarContentContainer.removeView(view)
             viewModel.clearSelectedNotes()
         }
     }
 
     private fun disableSearchViewToolbarState(){
         view?.let {
-            val view = toolbar_content_container
+            val view = binding.toolbarContentContainer
                 .findViewById<Toolbar>(R.id.searchview_toolbar)
-            toolbar_content_container.removeView(view)
+            binding.toolbarContentContainer.removeView(view)
         }
     }
 
@@ -425,7 +422,7 @@ constructor(
 
     private fun setupSearchView(){
 
-        val searchViewToolbar: Toolbar? = toolbar_content_container
+        val searchViewToolbar: Toolbar? = binding.toolbarContentContainer
             .findViewById<Toolbar>(R.id.searchview_toolbar)
 
         searchViewToolbar?.let { toolbar ->
@@ -468,7 +465,7 @@ constructor(
     }
 
     private fun setupFAB(){
-        add_new_note_fab.setOnClickListener {
+        binding.addNewNoteFab.setOnClickListener {
             uiController.displayInputCaptureDialog(
                 getString(com.codingwithmitch.cleannotes.R.string.text_enter_a_title),
                 object: DialogInputCaptureCallback{
@@ -492,14 +489,14 @@ constructor(
     }
 
     private fun setupSwipeRefresh(){
-        swipe_refresh.setOnRefreshListener {
+        binding.swipeRefresh.setOnRefreshListener {
             startNewSearch()
-            swipe_refresh.isRefreshing = false
+            binding.swipeRefresh.isRefreshing = false
         }
     }
 
     private fun setupFilterButton(){
-        val searchViewToolbar: Toolbar? = toolbar_content_container
+        val searchViewToolbar: Toolbar? = binding.toolbarContentContainer
             .findViewById<Toolbar>(R.id.searchview_toolbar)
         searchViewToolbar?.findViewById<ImageView>(R.id.action_filter)?.setOnClickListener {
             showFilterDialog()

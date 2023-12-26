@@ -40,6 +40,8 @@ class NoteInteractionManager{
                 is EditState -> {
                     _noteBodyState.value = DefaultState()
                 }
+
+                is DefaultState -> Unit
             }
         }
     }
@@ -52,6 +54,8 @@ class NoteInteractionManager{
                 is EditState -> {
                     _noteTitleState.value = DefaultState()
                 }
+
+                is DefaultState -> Unit
             }
         }
     }

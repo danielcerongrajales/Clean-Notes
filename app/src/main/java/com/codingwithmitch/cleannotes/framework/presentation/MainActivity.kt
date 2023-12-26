@@ -15,6 +15,7 @@ import com.afollestad.materialdialogs.input.input
 import com.codingwithmitch.cleannotes.R
 import com.codingwithmitch.cleannotes.business.domain.state.*
 import com.codingwithmitch.cleannotes.business.domain.state.UIComponentType.*
+import com.codingwithmitch.cleannotes.databinding.ActivityMainBinding
 import com.codingwithmitch.cleannotes.framework.presentation.common.NoteFragmentFactory
 import com.codingwithmitch.cleannotes.framework.presentation.common.displayToast
 import com.codingwithmitch.cleannotes.framework.presentation.common.gone
@@ -22,7 +23,6 @@ import com.codingwithmitch.cleannotes.framework.presentation.common.visible
 import com.codingwithmitch.cleannotes.util.TodoCallback
 import com.google.android.material.snackbar.BaseTransientBottomBar
 import com.google.android.material.snackbar.Snackbar
-import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
 import javax.inject.Inject
@@ -42,12 +42,13 @@ class MainActivity : AppCompatActivity(),
     private var appBarConfiguration: AppBarConfiguration? = null
 
     private var dialogInView: MaterialDialog? = null
-
+    private  lateinit var binding: ActivityMainBinding
     override fun onCreate(savedInstanceState: Bundle?) {
         inject()
         setFragmentFactory()
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_main)
+        binding= ActivityMainBinding.inflate(layoutInflater)
+        setContentView(binding.root)
     }
 
     private fun setFragmentFactory(){
@@ -61,9 +62,9 @@ class MainActivity : AppCompatActivity(),
 
     override fun displayProgressBar(isDisplayed: Boolean) {
         if(isDisplayed)
-            main_progress_bar.visible()
+            binding.mainProgressBar.visible()
         else
-            main_progress_bar.gone()
+            binding.mainProgressBar.gone()
     }
 
     override fun onSupportNavigateUp(): Boolean {

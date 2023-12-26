@@ -16,6 +16,7 @@ import com.codingwithmitch.cleannotes.business.interactors.common.DeleteNote.Com
 import com.codingwithmitch.cleannotes.business.interactors.notedetail.UpdateNote.Companion.UPDATE_NOTE_FAILED_PK
 import com.codingwithmitch.cleannotes.business.interactors.notedetail.UpdateNote.Companion.UPDATE_NOTE_SUCCESS
 import com.codingwithmitch.cleannotes.business.domain.state.*
+import com.codingwithmitch.cleannotes.databinding.FragmentNoteDetailBinding
 import com.codingwithmitch.cleannotes.framework.presentation.common.*
 import com.codingwithmitch.cleannotes.framework.presentation.notedetail.state.CollapsingToolbarState.*
 import com.codingwithmitch.cleannotes.framework.presentation.notedetail.state.NoteDetailStateEvent.*
@@ -23,10 +24,6 @@ import com.codingwithmitch.cleannotes.framework.presentation.notedetail.state.No
 import com.codingwithmitch.cleannotes.framework.presentation.notedetail.state.NoteInteractionState.*
 import com.codingwithmitch.cleannotes.framework.presentation.notelist.NOTE_PENDING_DELETE_BUNDLE_KEY
 import com.google.android.material.appbar.AppBarLayout
-import com.yydcdut.markdown.MarkdownProcessor
-import com.yydcdut.markdown.syntax.edit.EditFactory
-import kotlinx.android.synthetic.main.fragment_note_detail.*
-import kotlinx.android.synthetic.main.layout_note_detail_toolbar.*
 import kotlinx.coroutines.*
 
 const val NOTE_DETAIL_STATE_BUNDLE_KEY = "com.codingwithmitch.cleannotes.notes.framework.presentation.notedetail.state"
@@ -37,7 +34,7 @@ const val NOTE_DETAIL_STATE_BUNDLE_KEY = "com.codingwithmitch.cleannotes.notes.f
 class NoteDetailFragment
 constructor(
     private val viewModelFactory: ViewModelProvider.Factory
-): BaseNoteFragment(R.layout.fragment_note_detail) {
+): BaseNoteFragment<FragmentNoteDetailBinding>(FragmentNoteDetailBinding::inflate) {
 
     val viewModel: NoteDetailViewModel by viewModels {
         viewModelFactory
@@ -55,15 +52,15 @@ constructor(
         setupOnBackPressDispatcher()
         subscribeObservers()
 
-        container_due_date.setOnClickListener {
+        binding.containerDueDate.setOnClickListener {
             // TODO("handle click of due date")
         }
 
-        note_title.setOnClickListener {
+       binding.noteTitle.setOnClickListener {
             onClick_noteTitle()
         }
 
-        note_body.setOnClickListener {
+        binding.noteBody.setOnClickListener {
             onClick_noteBody()
         }
 
@@ -87,11 +84,11 @@ constructor(
     }
 
     private fun setupMarkdown(){
-        activity?.run {
+     /*   activity?.run {
             val markdownProcessor = MarkdownProcessor(this)
             markdownProcessor.factory(EditFactory.create())
             markdownProcessor.live(note_body)
-        }
+        }*/
     }
 
     private fun onClick_noteTitle(){
@@ -212,14 +209,14 @@ constructor(
             when(state){
 
                 is EditState -> {
-                    note_title.enableContentInteraction()
+                    binding.noteTitle.enableContentInteraction()
                     view?.showKeyboard()
                     displayEditStateToolbar()
                     viewModel.setIsUpdatePending(true)
                 }
 
                 is DefaultState -> {
-                    note_title.disableContentInteraction()
+                    binding.noteTitle.disableContentInteraction()
                 }
             }
         })
@@ -229,14 +226,14 @@ constructor(
             when(state){
 
                 is EditState -> {
-                    note_body.enableContentInteraction()
+                    binding.noteBody.enableContentInteraction()
                     view?.showKeyboard()
                     displayEditStateToolbar()
                     viewModel.setIsUpdatePending(true)
                 }
 
                 is DefaultState -> {
-                    note_body.disableContentInteraction()
+                    binding.noteBody.disableContentInteraction()
                 }
             }
         })
@@ -244,13 +241,13 @@ constructor(
 
     private fun displayDefaultToolbar(){
         activity?.let { a ->
-            toolbar_primary_icon.setImageDrawable(
+            binding.toolBar2.toolbarPrimaryIcon.setImageDrawable(
                 resources.getDrawable(
                     drawable.ic_arrow_back_grey_24dp,
                     a.application.theme
                 )
             )
-            toolbar_secondary_icon.setImageDrawable(
+            binding.toolBar2.toolbarSecondaryIcon.setImageDrawable(
                 resources.getDrawable(
                     drawable.ic_delete,
                     a.application.theme
@@ -261,13 +258,13 @@ constructor(
 
     private fun displayEditStateToolbar(){
         activity?.let { a ->
-            toolbar_primary_icon.setImageDrawable(
+            binding.toolBar2.toolbarPrimaryIcon.setImageDrawable(
                 resources.getDrawable(
                     drawable.ic_close_grey_24dp,
                     a.application.theme
                 )
             )
-            toolbar_secondary_icon.setImageDrawable(
+            binding.toolBar2.toolbarSecondaryIcon.setImageDrawable(
                 resources.getDrawable(
                     drawable.ic_done_grey_24dp,
                     a.application.theme
@@ -277,19 +274,19 @@ constructor(
     }
 
     private fun setNoteTitle(title: String) {
-        note_title.setText(title)
+        binding.noteTitle.setText(title)
     }
 
     private fun getNoteTitle(): String{
-        return note_title.text.toString()
+        return binding.noteTitle.text.toString()
     }
 
     private fun getNoteBody(): String{
-        return note_body.text.toString()
+        return binding.noteBody.text.toString()
     }
 
     private fun setNoteBody(body: String?){
-        note_body.setText(body)
+        binding.noteBody.setText(body)
     }
 
     private fun getSelectedNoteFromPreviousFragment(){
@@ -308,11 +305,11 @@ constructor(
 
                 // One-time check after rotation
                 if(viewModel.isToolbarCollapsed()){
-                    app_bar.setExpanded(false)
+                    binding.appBar.setExpanded(false)
                     transitionToCollapsedMode()
                 }
                 else{
-                    app_bar.setExpanded(true)
+                    binding.appBar.setExpanded(true)
                     transitionToExpandedMode()
                 }
             }
@@ -332,12 +329,12 @@ constructor(
     }
 
     private fun setupUI(){
-        note_title.disableContentInteraction()
-        note_body.disableContentInteraction()
+        binding.noteTitle.disableContentInteraction()
+        binding.noteBody.disableContentInteraction()
         displayDefaultToolbar()
         transitionToExpandedMode()
 
-        app_bar.addOnOffsetChangedListener(
+        binding.appBar.addOnOffsetChangedListener(
             AppBarLayout.OnOffsetChangedListener{_, offset ->
 
                 if(offset < COLLAPSING_TOOLBAR_VISIBILITY_THRESHOLD){
@@ -354,7 +351,7 @@ constructor(
                 }
             })
 
-        toolbar_primary_icon.setOnClickListener {
+        binding.toolBar2.toolbarPrimaryIcon.setOnClickListener {
             if(viewModel.checkEditState()){
                 view?.hideKeyboard()
                 viewModel.triggerNoteObservers()
@@ -366,7 +363,7 @@ constructor(
             }
         }
 
-        toolbar_secondary_icon.setOnClickListener {
+        binding.toolBar2.toolbarSecondaryIcon.setOnClickListener {
             if(viewModel.checkEditState()){
                 view?.hideKeyboard()
                 updateTitleInViewModel()
@@ -440,13 +437,13 @@ constructor(
     }
 
     private fun transitionToCollapsedMode() {
-        note_title.fadeOut()
-        displayToolbarTitle(tool_bar_title, getNoteTitle(), true)
+        binding.noteTitle.fadeOut()
+        displayToolbarTitle(binding.toolBar2.toolBarTitle, getNoteTitle(), true)
     }
 
     private fun transitionToExpandedMode() {
-        note_title.fadeIn()
-        displayToolbarTitle(tool_bar_title, null, true)
+        binding.noteTitle.fadeIn()
+        displayToolbarTitle(binding.toolBar2.toolBarTitle, null, true)
     }
 
     override fun inject() {

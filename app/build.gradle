@@ -8,7 +8,7 @@ apply plugin: 'com.android.application'
 
 apply plugin: 'kotlin-android'
 
-apply plugin: 'kotlin-android-extensions'
+apply plugin: 'kotlin-parcelize'
 
 apply plugin: 'kotlin-kapt'
 
@@ -18,6 +18,7 @@ apply plugin: 'com.google.gms.google-services'
 
 
 android {
+    namespace = "com.codingwithmitch.cleannotes"
     compileSdkVersion Versions.compilesdk
     defaultConfig {
         applicationId Application.id
@@ -57,6 +58,9 @@ android {
             useJUnitPlatform()
         }
     }
+    buildFeatures{
+        viewBinding = true
+    }
 
 }
 
@@ -65,7 +69,8 @@ dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
     implementation Dependencies.kotlin_standard_library
     implementation Dependencies.kotlin_reflect
-    implementation Dependencies.ktx
+
+    implementation "androidx.core:core-ktx:1.12.0"
     implementation Dependencies.navigation_runtime
     implementation Dependencies.navigation_ui
     implementation Dependencies.navigation_fragment
@@ -75,12 +80,19 @@ dependencies {
     implementation Dependencies.play_core
     implementation Dependencies.leak_canary
     implementation Dependencies.dagger
-    implementation Dependencies.room_runtime
-    implementation Dependencies.room_ktx
-    implementation Dependencies.markdown_processor
+
+
+
+
+    implementation "androidx.room:room-runtime:2.6.1"
+    annotationProcessor "androidx.room:room-compiler:2.6.1"
+    kapt "androidx.room:room-compiler:2.6.1"
+    implementation "androidx.room:room-ktx:2.6.1"
+
     implementation Dependencies.retrofit
     implementation Dependencies.retrofit_gson
     implementation Dependencies.firebase_firestore
+    implementation(platform("com.google.firebase:firebase-bom:32.3.1"))
     implementation Dependencies.firebase_auth
     implementation Dependencies.kotlin_coroutines_play_services
     implementation Dependencies.firebase_analytics
@@ -92,7 +104,7 @@ dependencies {
     implementation SupportDependencies.constraintlayout
     implementation SupportDependencies.material_design
 
-    kapt AnnotationProcessing.room_compiler
+
     kapt AnnotationProcessing.dagger_compiler
 
     testImplementation TestDependencies.mockk

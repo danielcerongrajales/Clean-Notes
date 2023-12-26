@@ -33,7 +33,7 @@
 
             </View>
 
-            <com.yydcdut.markdown.MarkdownEditText
+            <EditText
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:minHeight="300dp"
@@ -158,7 +158,7 @@
                 app:layout_collapseMode="pin"
                 android:background="@color/colorPrimary">
 
-                <include layout="@layout/layout_note_detail_toolbar"/>
+                <include     android:id="@+id/tool_bar2" layout="@layout/layout_note_detail_toolbar"/>
 
             </androidx.appcompat.widget.Toolbar>
 

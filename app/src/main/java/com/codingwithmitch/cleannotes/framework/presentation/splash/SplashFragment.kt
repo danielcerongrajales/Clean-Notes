@@ -8,6 +8,8 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import com.codingwithmitch.cleannotes.R
 import com.codingwithmitch.cleannotes.business.domain.state.DialogInputCaptureCallback
+import com.codingwithmitch.cleannotes.databinding.FragmentNoteDetailBinding
+import com.codingwithmitch.cleannotes.databinding.FragmentSplashBinding
 import com.codingwithmitch.cleannotes.framework.datasource.network.implementation.NoteFirestoreServiceImpl.Companion.EMAIL
 import com.codingwithmitch.cleannotes.framework.presentation.common.BaseNoteFragment
 import com.codingwithmitch.cleannotes.util.printLogD
@@ -24,7 +26,7 @@ class SplashFragment
 @Inject
 constructor(
     private val viewModelFactory: ViewModelProvider.Factory
-): BaseNoteFragment(R.layout.fragment_splash) {
+): BaseNoteFragment<FragmentSplashBinding>(FragmentSplashBinding::inflate) {
 
     val viewModel: SplashViewModel by viewModels {
         viewModelFactory
